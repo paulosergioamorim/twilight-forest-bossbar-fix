@@ -77,22 +77,29 @@ Código do projeto original usado na análise, conferido com o bytecode instalad
 
 ## Compilar e testar
 
-A compilação é offline e utiliza os arquivos já instalados em uma instância
-do **Modrinth App**. Abra essa instância pelo menos uma vez para gerar o cache
-do Fabric. É necessário ter **Python 3.9 ou superior** e um **JDK 21 ou superior** instalado.
+A compilação utiliza **Gradle com Fabric Loom** e requer um **JDK 21** instalado.
+O Gradle Wrapper incluído no repositório baixa a versão correta do Gradle;
+não é necessário instalar Gradle ou Python, nem ter uma instância do Modrinth App.
+O primeiro build precisa de internet para baixar o Gradle, Minecraft, mappings,
+Fabric Loader, Fabric API e Twilight Forest Fabric **4.8.734**.
 
 ```sh
-python3 build.py --profile "/caminho/da/instancia" --test
+./gradlew clean build
 ```
 
-Se `javac` não estiver no PATH, indique a pasta `bin` do JDK:
+No Windows, use `gradlew.bat clean build`. Se o JDK não estiver no PATH,
+configure `JAVA_HOME` para a raiz da instalação do JDK 21.
+
+O comando `build` também executa os testes de regressão. Para executá-los separadamente:
 
 ```sh
-python3 build.py --profile "/caminho/da/instancia" --java-bin "/caminho/do/jdk/bin" --test
+./gradlew regressionTest
 ```
 
-O resultado fica em `build/tf-bossbar-packet-fix-1.0.0+mc1.21.1.jar`. O código usa
-os nomes intermediary do Minecraft 1.21.1 e gera classes compatíveis com Java 21.
+O resultado para instalação fica em `build/libs/tf-bossbar-packet-fix-1.0.0+mc1.21.1.jar`.
+O código usa os mappings oficiais Mojang; o Loom remapeia o JAR final para os
+nomes intermediary utilizados pelo Fabric. As classes são compatíveis com Java 21.
+O JAR com sufixo `-dev` é apenas para desenvolvimento e não deve ser instalado.
 Os JARs do Minecraft, Fabric e Twilight não são distribuídos neste repositório.
 
 Os testes de regressão utilizam o executor real do Minecraft 1.21.1 e verificam:

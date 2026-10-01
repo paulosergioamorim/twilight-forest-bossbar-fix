@@ -1,0 +1,72 @@
+plugins {
+    id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+}
+
+group = 'br.com.paulosergio'
+version = "${mod_version}+mc${minecraft_version}"
+
+base {
+    archivesName = 'tf-bossbar-packet-fix'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'CurseMaven'
+        url = 'https://www.cursemaven.com'
+        content { includeGroup 'curse.maven' }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    modImplementation "curse.maven:the-twilight-forest-227639:${twilight_forest_file_id}"
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+    options.compilerArgs += ['-proc:none']
+}
+
+processResources {
+    inputs.property 'version', mod_version
+    filesMatching('fabric.mod.json') {
+        expand(version: mod_version)
+    }
+}
+
+tasks.withType(Jar).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+jar {
+    from('LICENSE')
+}
+
+tasks.register('regressionTest', JavaExec) {
+    group = 'verification'
+    description = 'Run packet ordering regressions against the Minecraft task executor.'
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'br.com.paulosergio.PacketOrderingTest'
+    workingDir = layout.buildDirectory.dir('regression-test')
+    doFirst { workingDir.mkdirs() }
+    javaLauncher = javaToolchains.launcherFor {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+test {
+    // These regressions use a main method rather than a JUnit test runner.
+    dependsOn regressionTest
+    failOnNoDiscoveredTests = false
+}

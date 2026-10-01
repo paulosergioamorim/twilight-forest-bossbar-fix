@@ -1,31 +1,31 @@
-package local.twilightfix;
+package br.com.paulosergio;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import net.minecraft.class_1657;
-import net.minecraft.class_4093;
+import net.minecraft.util.thread.ReentrantBlockableEventLoop;
+import net.minecraft.world.entity.player.Player;
 import twilightforest.network.IPayloadContext;
 
 /** Regression scenarios running against Minecraft 1.21.1's actual task executor. */
 public final class PacketOrderingTest {
-    private static final class ClientLoop extends class_4093<Runnable> {
+    private static final class ClientLoop extends ReentrantBlockableEventLoop<Runnable> {
         private final Thread owner = Thread.currentThread();
 
         ClientLoop() { super("bossbar-regression"); }
-        @Override protected Runnable method_16211(Runnable work) { return work; }
-        @Override protected boolean method_18856(Runnable work) { return true; }
-        @Override protected Thread method_3777() { return owner; }
-        @Override public void method_16901(Runnable work) { method_18858(work); }
-        void post(Runnable work) { method_18858(work); }
-        void drain() { while (method_16075()) { } }
+        @Override protected Runnable wrapRunnable(Runnable work) { return work; }
+        @Override protected boolean shouldRun(Runnable work) { return true; }
+        @Override protected Thread getRunningThread() { return owner; }
+        @Override public void executeIfPossible(Runnable work) { tell(work); }
+        void post(Runnable work) { tell(work); }
+        void drain() { while (pollTask()) { } }
     }
 
     private static IPayloadContext originalContext(ClientLoop loop) {
         return new IPayloadContext() {
-            @Override public class_1657 player() { return null; }
+            @Override public Player player() { return null; }
             @Override public PacketFlow flow() { return PacketFlow.CLIENTBOUND; }
             @Override public void enqueueWork(Runnable work) { loop.execute(work); }
         };

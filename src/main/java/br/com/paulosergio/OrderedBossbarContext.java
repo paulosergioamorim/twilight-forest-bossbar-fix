@@ -1,21 +1,21 @@
-package local.twilightfix;
+package br.com.paulosergio;
 
-import net.minecraft.class_1255;
-import net.minecraft.class_1657;
+import net.minecraft.util.thread.BlockableEventLoop;
+import net.minecraft.world.entity.player.Player;
 import twilightforest.network.IPayloadContext;
 
 /** Preserve packet order when Fabric has already dispatched to the client thread. */
 public final class OrderedBossbarContext implements IPayloadContext {
     private final IPayloadContext delegate;
-    private final class_1255<?> client;
+    private final BlockableEventLoop<?> client;
 
-    public OrderedBossbarContext(IPayloadContext delegate, class_1255<?> client) {
+    public OrderedBossbarContext(IPayloadContext delegate, BlockableEventLoop<?> client) {
         this.delegate = delegate;
         this.client = client;
     }
 
     @Override
-    public class_1657 player() {
+    public Player player() {
         return delegate.player();
     }
 
@@ -29,7 +29,7 @@ public final class OrderedBossbarContext implements IPayloadContext {
         // Minecraft's reentrant executor defers execute() inside another task,
         // even on the client thread. A vanilla boss_event already in the queue
         // would then overtake the custom ADD that creates its bossbar.
-        if (client.method_18854()) { // ThreadExecutor.isOnThread, MC 1.21.1
+        if (client.isSameThread()) {
             work.run();
         } else {
             delegate.enqueueWork(work);

@@ -1,4 +1,4 @@
-package local.twilightfix;
+package br.com.paulosergio;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
@@ -18,7 +18,7 @@ public final class TfBossbarPacketFix implements ClientModInitializer {
         // All client initializers, including Twilight Forest's original packet
         // registration, have completed before CLIENT_STARTED fires.
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            ClientPlayNetworking.unregisterGlobalReceiver(AddTFBossBarPacket.TYPE.comp_2242());
+            ClientPlayNetworking.unregisterGlobalReceiver(AddTFBossBarPacket.TYPE.id());
             boolean addRegistered = ClientPlayNetworking.registerGlobalReceiver(
                 AddTFBossBarPacket.TYPE,
                 (packet, context) -> {
@@ -30,7 +30,7 @@ public final class TfBossbarPacketFix implements ClientModInitializer {
                     }
                 });
 
-            ClientPlayNetworking.unregisterGlobalReceiver(UpdateTFBossBarStylePacket.TYPE.comp_2242());
+            ClientPlayNetworking.unregisterGlobalReceiver(UpdateTFBossBarStylePacket.TYPE.id());
             boolean styleRegistered = ClientPlayNetworking.registerGlobalReceiver(
                 UpdateTFBossBarStylePacket.TYPE,
                 (packet, context) -> UpdateTFBossBarStylePacket.handle(packet,
