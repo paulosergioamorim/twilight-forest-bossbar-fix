@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "tf_bossbar_packet_fix",
+  "version": "1.0.0",
+  "name": "Twilight Forest Bossbar Packet Fix",
+  "description": "Local fix for bossbar ADD/UPDATE packet ordering in Twilight Forest Fabric 4.8.629 and 4.8.734 on Minecraft 1.21.1.",
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["local.twilightfix.TfBossbarPacketFix"]
+  },
+  "depends": {
+    "fabricloader": ">=0.17.0",
+    "minecraft": "1.21.1",
+    "java": ">=21",
+    "fabric-api": ">=0.116.14+1.21.1",
+    "twilightforest": ["4.8.629", "4.8.734"]
+  }
+}
