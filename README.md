@@ -79,7 +79,7 @@ Código do projeto original usado na análise, conferido com o bytecode instalad
 
 A compilação é offline e utiliza os arquivos já instalados em uma instância
 do **Modrinth App**. Abra essa instância pelo menos uma vez para gerar o cache
-do Fabric. É necessário ter **Python 3** e um **JDK 21 ou superior** instalado.
+do Fabric. É necessário ter **Python 3.9 ou superior** e um **JDK 21 ou superior** instalado.
 
 ```sh
 python3 build.py --profile "/caminho/da/instancia" --test
