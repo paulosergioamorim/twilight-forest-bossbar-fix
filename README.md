@@ -1,5 +1,7 @@
 # Twilight Forest Bossbar Packet Fix
 
+O código deste projeto foi gerado a partir do modelo **GPT-6.1-Sol (max)** da **OpenAI**.
+
 Mod auxiliar para **Minecraft 1.21.1 com Fabric** que corrige o `Network Protocol
 Error` / `NullPointerException` causado pela ordem dos pacotes de bossbar do
 Twilight Forest. A falha pode desconectar o jogador durante uma luta e impedir
